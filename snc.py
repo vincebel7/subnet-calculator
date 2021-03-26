@@ -5,7 +5,7 @@ def add_preceding_zeros(bin_octet): # for octets
         return bin_octet
     return(add_preceding_zeros('0' + str(bin_octet)))
 
-def add_trailing_zeros(bin_mask): # for binary subnet mask
+def add_trailing_zeros(bin_mask): # for binary network addr
     if(len(bin_mask) >= 32):
         return bin_mask
     return(add_trailing_zeros(str(bin_mask) + '0'))
@@ -46,6 +46,13 @@ def get_network_address(binaddr, mask):
             binaddr = binaddr[:i] + "0" + binaddr[i+1:]
     return binaddr
 
+def get_broadcast_address(binaddr, mask):
+    for i in range(32):
+        if(i >= int(mask)):
+            binaddr = binaddr[:i] + "1" + binaddr[i+1:]
+    return binaddr
+
+
 def is_CIDR(arg):
     if re.match('(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(3[0-2]|[1-2][0-9]|[0-9]))$', arg):
     #if re.match('(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])', arg):
@@ -65,21 +72,24 @@ def handle_CIDR(arg):
     for i in range(int(mask)):
         binmask = binmask + "1"
     binmask = add_trailing_zeros(binmask)
-    networkaddr_binary = get_network_address(binaddr, mask)
-    networkaddr = binary_ip_to_decimal(networkaddr_binary)
+    binnetworkaddr = get_network_address(binaddr, mask)
+    binbroadcastaddr = get_broadcast_address(binaddr, mask)
     print("\nResults for",arg,"\n")
     print("IP address:\t\t\t", addr)
     print("Subnet mask:\t\t\t", binary_ip_to_decimal(binmask))
-    print("Network address:\t\t", networkaddr)
+    print("Network address:\t\t", binary_ip_to_decimal(binnetworkaddr))
+    print("Broadcast address:\t\t", binary_ip_to_decimal(binbroadcastaddr))
     print("# of valid hosts:\t\t", (2**(32-int(mask)))-2)
 
     print("\n-- Binary values ------------------------------------------------")
-    print("IP address (binary):\t\t", binaddr)
-    print("Subnet mask (binary):\t\t", binmask)
+    print("IP address:\t\t\t", binaddr)
+    print("Subnet mask:\t\t\t", binmask)
+    print("Network address:\t\t", binnetworkaddr)
+    print("Broadcast address:\t\t", binbroadcastaddr)
     print()
 
 def call_version():
-    print("subnet-calculator v0.1")
+    print("subnet-calculator v0.2")
     print("Author: https://github.com/vincebel7\n")
 
 def call_help():
