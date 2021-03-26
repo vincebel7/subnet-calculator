@@ -1,2 +1,4 @@
 # subnet-calculator
-A CLI subnet calculator in Python
+## by vincebel
+
+Simple command-line subnet calculator in Python.
